@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.Dao;
+package ru.practicum.shareit.item.dao;
 
 import ru.practicum.shareit.item.model.Item;
 

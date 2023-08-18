@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DuplicateEmail;
 import ru.practicum.shareit.exceptions.NonexistentException;
-import ru.practicum.shareit.user.Dao.UserRepository;
-import ru.practicum.shareit.user.Dto.UserDto;
-import ru.practicum.shareit.user.Dto.UserMapper;
+import ru.practicum.shareit.user.dao.UserRepository;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
