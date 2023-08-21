@@ -5,7 +5,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 
-public class UserMapper {
+public class UserMapperImpl {
     public static User toUserWithCheck(@Valid UserDto userDto) {
         if (userDto.getEmail() == null || userDto.getName() == null) {
             throw new ValidationException("Имя и email пользователя не могут быть пусты");
@@ -18,5 +18,9 @@ public class UserMapper {
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         return user;
+    }
+
+    public static UserDto toUserDto(@Valid User user) {
+        return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 }

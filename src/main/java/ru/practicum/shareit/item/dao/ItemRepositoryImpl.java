@@ -1,15 +1,16 @@
 package ru.practicum.shareit.item.dao;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
 public class ItemRepositoryImpl implements ItemRepository {
-    private HashMap<Integer, Item> items = new HashMap();
+    private final Map<Integer, Item> items = new HashMap<>();
 
     public List<Item> findAll() {
         return new ArrayList<>(items.values());

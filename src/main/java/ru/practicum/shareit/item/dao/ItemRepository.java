@@ -5,9 +5,9 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemRepository {
-    public List<Item> findAll();
+    List<Item> findAll();
 
-    public Item save(Item item);
+    Item save(Item item);
 
-    public void delete(int itemId);
+    void delete(int itemId);
 }

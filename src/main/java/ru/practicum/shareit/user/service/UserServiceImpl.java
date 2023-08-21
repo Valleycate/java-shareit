@@ -6,24 +6,27 @@ import ru.practicum.shareit.exceptions.DuplicateEmail;
 import ru.practicum.shareit.exceptions.NonexistentException;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.dto.UserMapperImpl;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    int userId = 1;
+    private int userId = 1;
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDto> findAll() {
+        return userRepository.findAll().stream()
+                .map(UserMapperImpl::toUserDto)
+                .collect(Collectors.toList());
     }
 
-    public User addUser(UserDto userDto) {
-        User user = UserMapper.toUserWithCheck(userDto);
+    public UserDto addUser(UserDto userDto) {
+        User user = UserMapperImpl.toUserWithCheck(userDto);
         Optional<User> optionalUser = userRepository.findAll().stream()
                 .filter(u -> u.getEmail().equals(user.getEmail()))
                 .findFirst();
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
         user.setId(userId);
         userId++;
         userRepository.save(user);
-        return user;
+        return UserMapperImpl.toUserDto(user);
     }
 
     public User findUserById(int userId) {
@@ -47,9 +50,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User updateUser(UserDto userDto, int userId) {
+    public UserDto updateUser(UserDto userDto, int userId) {
         User user = findUserById(userId);
-        User updateUser = UserMapper.toUserWithoutCheck(userDto);
+        User updateUser = UserMapperImpl.toUserWithoutCheck(userDto);
         if (updateUser.getEmail() != null) {
             Optional<User> optionalUser = userRepository.findAll().stream()
                     .filter(u -> u.getId() != userId)
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
             user.setName(updateUser.getName());
         }
         userRepository.save(user);
-        return user;
+        return UserMapperImpl.toUserDto(user);
     }
 
     public void deleteUser(int userId) {
