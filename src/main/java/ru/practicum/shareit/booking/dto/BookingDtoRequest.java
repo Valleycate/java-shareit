@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 
 @Data
 public class BookingDtoRequest {
-    private final int id;
+    private int id;
     @NotNull
     @FutureOrPresent
-    private final LocalDateTime end;
+    private LocalDateTime end;
     @NotNull
     @FutureOrPresent
-    private final LocalDateTime start;
+    private LocalDateTime start;
     @NotNull
-    private final Integer itemId;
+    private Integer itemId;
 }

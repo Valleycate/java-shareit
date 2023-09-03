@@ -8,12 +8,12 @@ import javax.validation.constraints.Size;
 
 @Data
 public class UserDto {
-    private final int id;
+    private int id;
     @Size(min = 1, max = 300)
     @NotNull
-    private final String name;
+    private String name;
     @Size(min = 1, max = 300)
     @Email
     @NotNull
-    private final String email;
+    private String email;
 }

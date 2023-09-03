@@ -8,16 +8,16 @@ import javax.validation.constraints.Size;
 
 @Data
 public class ItemDto {
-    private final int id;
+    private int id;
     @NotBlank
     @Size(min = 1, max = 100)
     @NotNull
-    private final String name;
+    private String name;
     @NotBlank
     @Size(min = 1, max = 300)
     @NotNull
     @NotBlank
-    private final String description;
+    private String description;
     @NotNull
-    private final Boolean available;
+    private Boolean available;
 }

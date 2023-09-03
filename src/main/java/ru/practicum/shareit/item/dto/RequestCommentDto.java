@@ -8,9 +8,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class RequestCommentDto {
-    private final int id;
+    private int id;
     @NotNull
     @NotBlank
     @NotEmpty
-    private final String text;
+    private String text;
 }
