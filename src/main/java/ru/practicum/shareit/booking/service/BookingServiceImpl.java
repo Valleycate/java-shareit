@@ -122,12 +122,12 @@ public class BookingServiceImpl implements BookingService {
                     .forEach(itemDto -> ans.addAll(repository.findByItem_IdOrderByStartDesc(itemDto.getId())));
         } else if (state.equals(DtoState.FUTURE.toString())) {
             itemService.findAllItemsByUserForBooking(userId)
-                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStartIsAfterOrderByStartDesc
-                            (itemDto.getId(), LocalDateTime.now())));
+                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStartIsAfterOrderByStartDesc(
+                            itemDto.getId(), LocalDateTime.now())));
         } else if (state.equals(DtoState.PAST.toString())) {
             itemService.findAllItemsByUserForBooking(userId)
-                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndEndIsBeforeOrderByStartDesc
-                            (itemDto.getId(), LocalDateTime.now())));
+                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndEndIsBeforeOrderByStartDesc(
+                            itemDto.getId(), LocalDateTime.now())));
         } else if (state.equals(DtoState.WAITING.toString())) {
             itemService.findAllItemsByUserForBooking(userId)
                     .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStatusOrderByStartDesc(itemDto.getId(),
@@ -138,8 +138,8 @@ public class BookingServiceImpl implements BookingService {
                             BookingStatus.REJECTED)));
         } else if (state.equals(DtoState.CURRENT.toString())) {
             itemService.findAllItemsByUserForBooking(userId)
-                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc
-                            (itemDto.getId(), LocalDateTime.now(), LocalDateTime.now())));
+                    .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+                            itemDto.getId(), LocalDateTime.now(), LocalDateTime.now())));
         } else {
             throw new BadBookingState("Unknown state: " + state);
         }
