@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -11,23 +10,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
-    @Column(name = "description", nullable = false, length = 300)
-    private String description;
-    @Column(name = "available", nullable = false)
-    private Boolean available;
+    @Column(name = "text", nullable = false, length = 300)
+    private String text;
     @ManyToOne()
-    private User owner;
-    @Transient
-    private ItemRequest request;
+    private Item item;
+    @ManyToOne()
+    private User author;
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
 }

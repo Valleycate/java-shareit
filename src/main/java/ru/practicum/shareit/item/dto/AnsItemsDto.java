@@ -5,19 +5,27 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
-public class ItemDto {
-    private final int id;
+public class AnsItemsDto {
+    @NotNull
+    private int id;
     @NotBlank
     @Size(min = 1, max = 100)
     @NotNull
-    private final String name;
+    private String name;
     @NotBlank
     @Size(min = 1, max = 300)
     @NotNull
     @NotBlank
-    private final String description;
+    private String description;
     @NotNull
-    private final Boolean available;
+    private Boolean available;
+    @NotNull
+    private LastBooking lastBooking;
+    @NotNull
+    private NextBooking nextBooking;
+    @NotNull
+    private List<AnswerCommentDto> comments;
 }
