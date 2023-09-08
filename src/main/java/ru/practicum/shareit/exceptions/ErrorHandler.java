@@ -20,7 +20,7 @@ public class ErrorHandler {
     @ExceptionHandler(BadBookingState.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleBadBookingState(final BadBookingState e) {
-        return new ErrorResponse(e.getMessage());
+        return new ErrorResponse("Unknown state: " + e.getMessage());
     }
 
     @ExceptionHandler({ValidationException.class, NullPointerException.class})

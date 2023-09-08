@@ -1,18 +1,25 @@
 package ru.practicum.shareit.booking.HandleBookingState;
 
-import lombok.RequiredArgsConstructor;
+import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
-import ru.practicum.shareit.exceptions.BadBookingState;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class HandleBookingStateUnknown implements HandlerBookingState {
 
-    public void setNext(HandlerBookingState handler) {
+public class HandleBookingStateUnknown extends HandlerBookingState {
+
+    public HandleBookingStateUnknown(BookingDbRepository repository, BookingMapper mapper) {
+        super(repository, mapper);
     }
 
-    public List<BookingDtoAnswer> handleState(Integer userId, String state) {
-        throw new BadBookingState("Unknown state: " + state);
+    @Override
+    public String getState() {
+        return "Unknown state";
+    }
+
+    @Override
+    public List<BookingDtoAnswer> findBookings(int userId) {
+        return null;
     }
 }

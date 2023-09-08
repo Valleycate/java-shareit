@@ -6,17 +6,17 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateAll;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateCurrent;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateFuture;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStateAllWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStateCurrentWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStateFutureWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStatePastWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStateRejectedWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems.HandleBookingStateWaitingWithItems;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStatePast;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateRejected;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateUnknown;
 import ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateWaiting;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateAllWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateCurrentWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateFutureWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStatePastWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateRejectedWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateUnknownWithItems;
-import ru.practicum.shareit.booking.HandleBookingStateItems.HandleBookingStateWaitingWithItems;
+import ru.practicum.shareit.booking.HandleBookingState.HandlerBookingState;
 import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
@@ -30,10 +30,8 @@ import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,43 +93,32 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public List<BookingDtoAnswer> getAllBookingByState(Integer userId, String state) {
-        HandleBookingStateAll handleAll = new HandleBookingStateAll(repository);
-        HandleBookingStateFuture handleFuture = new HandleBookingStateFuture(repository);
-        HandleBookingStatePast handlePast = new HandleBookingStatePast(repository);
-        HandleBookingStateWaiting handleWaiting = new HandleBookingStateWaiting(repository);
-        HandleBookingStateRejected handleRejected = new HandleBookingStateRejected(repository);
-        HandleBookingStateCurrent handleCurrent = new HandleBookingStateCurrent(repository);
-        HandleBookingStateUnknown handleUnknown = new HandleBookingStateUnknown();
-        handleAll.setNext(handleFuture);
-        handleFuture.setNext(handlePast);
-        handlePast.setNext(handleWaiting);
-        handleWaiting.setNext(handleRejected);
-        handleRejected.setNext(handleCurrent);
-        handleCurrent.setNext(handleUnknown);
         userService.findUserById(userId);
-        return handleAll.handleState(userId, state);
+        HandlerBookingState handlers = HandlerBookingState.link(
+                new HandleBookingStateAll(repository, mapper),
+                new HandleBookingStateFuture(repository, mapper),
+                new HandleBookingStatePast(repository, mapper),
+                new HandleBookingStateWaiting(repository, mapper),
+                new HandleBookingStateRejected(repository, mapper),
+                new HandleBookingStateCurrent(repository, mapper),
+                new HandleBookingStateUnknown(repository, mapper));
+        return handlers.handle(userId, state);
     }
 
     public List<BookingDtoAnswer> getAllBookingByOwnerItemsAndState(Integer userId, String state) {
-        HandleBookingStateAllWithItems handleAll = new HandleBookingStateAllWithItems(repository);
-        HandleBookingStateFutureWithItems handleFuture = new HandleBookingStateFutureWithItems(repository);
-        HandleBookingStatePastWithItems handlePast = new HandleBookingStatePastWithItems(repository);
-        HandleBookingStateWaitingWithItems handleWaiting = new HandleBookingStateWaitingWithItems(repository);
-        HandleBookingStateRejectedWithItems handleRejected = new HandleBookingStateRejectedWithItems(repository);
-        HandleBookingStateCurrentWithItems handleCurrent = new HandleBookingStateCurrentWithItems(repository);
-        HandleBookingStateUnknownWithItems handleUnknown = new HandleBookingStateUnknownWithItems();
-        handleAll.setNext(handleFuture);
-        handleFuture.setNext(handlePast);
-        handlePast.setNext(handleWaiting);
-        handleWaiting.setNext(handleRejected);
-        handleRejected.setNext(handleCurrent);
-        handleCurrent.setNext(handleUnknown);
-        List<Booking> ans = new ArrayList<>(handleAll.handleState(userId, state, itemService, new ArrayList<>()));
-        if (ans.isEmpty()) {
+        userService.findUserById(userId);
+        if (itemService.findAllItemsByUser(userId).isEmpty()) {
             throw new NonexistentException("У этого пользователя нет вещей");
         }
-        return ans.stream()
-                .map(mapper::toBookingDto)
-                .collect(Collectors.toList());
+        HandlerBookingState handlers = HandlerBookingState.link(
+                new HandleBookingStateAllWithItems(repository, mapper, itemService),
+                new HandleBookingStateFutureWithItems(repository, mapper, itemService),
+                new HandleBookingStatePastWithItems(repository, mapper, itemService),
+                new HandleBookingStateWaitingWithItems(repository, mapper, itemService),
+                new HandleBookingStateRejectedWithItems(repository, mapper, itemService),
+                new HandleBookingStateCurrentWithItems(repository, mapper, itemService),
+                new HandleBookingStateUnknown(repository, mapper));
+
+        return handlers.handle(userId, state);
     }
 }
