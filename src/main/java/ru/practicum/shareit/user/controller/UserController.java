@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 public class UserController {
-    UserMapper mapper = Mappers.getMapper(UserMapper.class);
-    private final UserServiceImpl userService;
+    private final UserService userService;
+    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     @PostMapping()
     public UserDto addUser(@Valid @RequestBody UserDto user) {

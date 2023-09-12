@@ -17,10 +17,10 @@ public class ErrorHandler {
         return Map.of("Non-existent object", e.getMessage());
     }
 
-    @ExceptionHandler(DuplicateEmail.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleDuplicateEmail(final DuplicateEmail e) {
-        return Map.of("Duplicate email", e.getMessage());
+    @ExceptionHandler(BadBookingState.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleBadBookingState(final BadBookingState e) {
+        return new ErrorResponse("Unknown state: " + e.getMessage());
     }
 
     @ExceptionHandler({ValidationException.class, NullPointerException.class})
