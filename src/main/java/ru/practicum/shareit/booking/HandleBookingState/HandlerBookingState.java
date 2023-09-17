@@ -26,11 +26,11 @@ public abstract class HandlerBookingState {
 
     public abstract String getState();
 
-    public abstract List<BookingDtoAnswer> findBookings(int userId);
+    public abstract List<BookingDtoAnswer> findBookings(int userId, int page    , int size);
 
-    public List<BookingDtoAnswer> handle(int userId, String state) {
+    public List<BookingDtoAnswer> handle(int userId, String state, int page, int size) {
         if (state.equals(getState())) {
-            return findBookings(userId);
+            return findBookings(userId, page, size);
         }
         if (getState().equals("Unknown state")) {
             throw new BadBookingState(state);
@@ -38,6 +38,6 @@ public abstract class HandlerBookingState {
         if (next == null) {
             return new ArrayList<>();
         }
-        return next.handle(userId, state);
+        return next.handle(userId, state, page, size);
     }
 }

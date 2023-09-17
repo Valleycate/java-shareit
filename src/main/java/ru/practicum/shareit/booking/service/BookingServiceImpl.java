@@ -92,7 +92,13 @@ public class BookingServiceImpl implements BookingService {
         return mapper.toBookingDto(booking);
     }
 
-    public List<BookingDtoAnswer> getAllBookingByState(Integer userId, String state) {
+    public List<BookingDtoAnswer> getAllBookingByState(Integer userId, String state, int from, int size) {
+        int page;
+        if(from < 0){
+            page = from;
+        }else{
+            page = from/size;
+        }
         userService.findUserById(userId);
         HandlerBookingState handlers = HandlerBookingState.link(
                 new HandleBookingStateAll(repository, mapper),
@@ -102,10 +108,10 @@ public class BookingServiceImpl implements BookingService {
                 new HandleBookingStateRejected(repository, mapper),
                 new HandleBookingStateCurrent(repository, mapper),
                 new HandleBookingStateUnknown(repository, mapper));
-        return handlers.handle(userId, state);
+        return handlers.handle(userId, state, page, size);
     }
 
-    public List<BookingDtoAnswer> getAllBookingByOwnerItemsAndState(Integer userId, String state) {
+    public List<BookingDtoAnswer> getAllBookingByOwnerItemsAndState(Integer userId, String state, int from, int size) {
         userService.findUserById(userId);
         if (itemService.findAllItemsByUser(userId).isEmpty()) {
             throw new NonexistentException("У этого пользователя нет вещей");
@@ -119,6 +125,6 @@ public class BookingServiceImpl implements BookingService {
                 new HandleBookingStateCurrentWithItems(repository, mapper, itemService),
                 new HandleBookingStateUnknown(repository, mapper));
 
-        return handlers.handle(userId, state);
+        return handlers.handle(userId, state, from, size);
     }
 }

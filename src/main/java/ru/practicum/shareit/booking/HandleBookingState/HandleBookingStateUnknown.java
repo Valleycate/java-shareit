@@ -19,7 +19,7 @@ public class HandleBookingStateUnknown extends HandlerBookingState {
     }
 
     @Override
-    public List<BookingDtoAnswer> findBookings(int userId) {
+    public List<BookingDtoAnswer> findBookings(int userId, int page, int size) {
         return null;
     }
 }
