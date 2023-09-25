@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.booking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +32,14 @@ public class BookingRepositoryTest {
         user.setId(1);
         user.setName("user");
         user.setEmail("user@email");
-        userRepository.save(user);
+        user = userRepository.save(user);
         Item item = new Item();
         item.setId(1);
         item.setName("item 1");
         item.setDescription("item 1 description");
         item.setOwner(user);
         item.setAvailable(true);
-        itemRepository.save(item);
+        item = itemRepository.save(item);
         Booking booking = new Booking();
         booking.setBooker(user);
         booking.setEnd(LocalDateTime.MAX);

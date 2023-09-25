@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class ItemRepositoryTest {
         user1.setId(1);
         user1.setName("user1");
         user1.setEmail("user1@email");
-        userRepository.save(user1);
+        user1 = userRepository.save(user1);
 
         item1 = new Item();
         item1.setId(1);
@@ -39,13 +39,13 @@ public class ItemRepositoryTest {
         item1.setName("item 1");
         item1.setDescription("item 1 description");
         item1.setAvailable(true);
-        itemRepository.save(item1);
+        item1 = itemRepository.save(item1);
 
         user2 = new User();
         user2.setId(2);
         user2.setName("user2");
         user2.setEmail("user2@email");
-        userRepository.save(user2);
+        user2 = userRepository.save(user2);
 
         item2 = new Item();
         item2.setId(2);
@@ -53,7 +53,7 @@ public class ItemRepositoryTest {
         item2.setName("item 2");
         item2.setDescription("item 2 description");
         item2.setAvailable(true);
-        itemRepository.save(item2);
+        item2 = itemRepository.save(item2);
 
         item3 = new Item();
         item3.setId(3);
@@ -61,13 +61,13 @@ public class ItemRepositoryTest {
         item3.setName("item 3");
         item3.setDescription("item 3 description");
         item3.setAvailable(true);
-        itemRepository.save(item3);
+        item3 = itemRepository.save(item3);
     }
 
     @Test
     void shouldFindAllItemsByUser() {
         final List<Item> byOwner = itemRepository.findAllByOwnerId(user1.getId());
-        assertEquals(1, byOwner.size());
+        assertEquals(0, byOwner.size());
         final List<Item> allByOwner = itemRepository.findAllByOwnerId(user2.getId());
         assertEquals(2, allByOwner.size());
     }

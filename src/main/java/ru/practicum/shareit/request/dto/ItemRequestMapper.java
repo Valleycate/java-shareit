@@ -1,7 +1,7 @@
 package ru.practicum.shareit.request.dto;
 
 import org.mapstruct.Mapper;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import javax.validation.Valid;
 
