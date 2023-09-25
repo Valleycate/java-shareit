@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.Data;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -14,13 +13,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * TODO Sprint add-item-requests.
  */
 @Data
-@Entity
+@Entity(name = "requests")
 @Table(name = "requests")
 public class ItemRequest {
     @Id

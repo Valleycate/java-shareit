@@ -2,8 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -21,7 +19,7 @@ import ru.practicum.shareit.item.dto.NextBooking;
 import ru.practicum.shareit.item.dto.RequestCommentDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
@@ -38,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserServiceImpl userService;
     private final ItemDbRepository repository;
     private final BookingDbRepository bookingRepository;
-    private final ItemRequestServiceImpl requestService;
+    private final ItemRequestService requestService;
     private final ItemRequestMapper requestMapper = Mappers.getMapper(ItemRequestMapper.class);
     private final CommentDbRepository commentRepository;
     private final ItemMapper mapper = Mappers.getMapper(ItemMapper.class);
@@ -85,9 +83,9 @@ public class ItemServiceImpl implements ItemService {
 
     public ItemDto addItem(ItemDto itemDto, int userId) {
         Item item;
-        if(itemDto.getRequestId() == null) {
+        if (itemDto.getRequestId() == null) {
             item = mapper.toItemWithCheck(itemDto, userService.findUserById(userId), null);
-        }else {
+        } else {
             item = mapper.toItemWithCheck(itemDto, userService.findUserById(userId),
                     requestMapper.fromDto(requestService.findRequestById(itemDto.getRequestId(), userId)));
         }
@@ -101,12 +99,12 @@ public class ItemServiceImpl implements ItemService {
             throw new NonexistentException("Обновлять информацию о вещи может только её владелец");
         }
         Item itemUpdate;
-        if(itemDto.getRequestId() == null) {
+        if (itemDto.getRequestId() == null) {
             itemUpdate = mapper.toItemWithoutCheck(itemDto, userService.findUserById(userId), null);
-        }else {
+        } else {
             itemUpdate = mapper.toItemWithoutCheck(itemDto, userService.findUserById(userId),
                     requestMapper.fromDto(requestService.findRequestById(itemDto.getRequestId(), userId)));
-        item.setRequest(itemUpdate.getRequest());
+            item.setRequest(itemUpdate.getRequest());
         }
         if (itemUpdate.getAvailable() != null) {
             item.setAvailable(itemUpdate.getAvailable());

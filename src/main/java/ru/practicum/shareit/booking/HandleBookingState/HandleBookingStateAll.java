@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.HandleBookingState;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
 import ru.practicum.shareit.booking.dto.BookingMapper;

@@ -20,7 +20,9 @@ public interface ItemMapper {
     @Mapping(target = "name", source = "itemDto.name")
     @Mapping(target = "description", source = "itemDto.description")
     Item toItemWithoutCheck(ItemDto itemDto, User owner, ItemRequest request);
+
     @Mapping(target = "requestId", source = "item.request.id")
     ItemDto toItemDto(@Valid Item item);
+
     AnsItemsDto toAnsItemsDto(@Valid Item item, List<AnswerCommentDto> comments);
 }

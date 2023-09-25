@@ -26,7 +26,7 @@ public abstract class HandlerBookingState {
 
     public abstract String getState();
 
-    public abstract List<BookingDtoAnswer> findBookings(int userId, int page    , int size);
+    public abstract List<BookingDtoAnswer> findBookings(int userId, int page, int size);
 
     public List<BookingDtoAnswer> handle(int userId, String state, int page, int size) {
         if (state.equals(getState())) {

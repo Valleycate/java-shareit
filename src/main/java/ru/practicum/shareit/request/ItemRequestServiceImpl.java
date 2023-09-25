@@ -3,27 +3,23 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NonexistentException;
 import ru.practicum.shareit.item.dao.ItemDbRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoAns;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ItemRequestServiceImpl {
+public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
     private final RequestDbRepository repository;
     private final UserService userService;
@@ -52,15 +48,15 @@ public class ItemRequestServiceImpl {
 
     public List<ItemRequestDtoAns> findAllRequests(int from, int size, int userId) {
         int page;
-        if(from < 0){
+        if (from < 0) {
             page = from;
-        }else{
-            page = from/size;
+        } else {
+            page = from / size;
         }
         userService.findUserById(userId);
         List<ItemRequest> requests = repository.findAllByOrderByCreatedDesc(PageRequest.of(page, size));
         return setItemsForRequest(requests.stream()
-                .filter(itemRequest -> itemRequest.getId() !=userId)
+                .filter(itemRequest -> itemRequest.getId() != userId)
                 .map(mapper::toDto)
                 .collect(Collectors.toList()));
 
@@ -69,14 +65,14 @@ public class ItemRequestServiceImpl {
     public ItemRequestDtoAns findRequestById(int id, int userId) {
         userService.findUserById(userId);
         Optional<ItemRequest> optionalRequest = repository.findById(id);
-        if(optionalRequest.isEmpty()){
-            throw new NonexistentException( "запроса по такому id нет!");
+        if (optionalRequest.isEmpty()) {
+            throw new NonexistentException("запроса по такому id нет!");
         }
         return setItemsForRequest(List.of(mapper.toDto(optionalRequest.get()))).get(0);
     }
 
-    private List<ItemRequestDtoAns> setItemsForRequest(List<ItemRequestDtoAns> requests){
-        requests.forEach(request ->request.setItems(itemRepository.findAllByRequestId(request.getId()).stream()
+    private List<ItemRequestDtoAns> setItemsForRequest(List<ItemRequestDtoAns> requests) {
+        requests.forEach(request -> request.setItems(itemRepository.findAllByRequestId(request.getId()).stream()
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList())));
         return requests;

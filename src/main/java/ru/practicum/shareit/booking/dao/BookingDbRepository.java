@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface BookingDbRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findByBooker_IdOrderByStartDesc(Integer bookerId, Pageable pageable);
+
     List<Booking> findByBooker_IdOrderByStartDesc(Integer bookerId);
 
     List<Booking> findByBooker_IdAndStatusOrderByStartDesc(Integer bookerId, BookingStatus status, Pageable pageable);
@@ -22,6 +23,7 @@ public interface BookingDbRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findByBooker_IdAndStartIsAfterOrderByStartDesc(Integer bookerId, LocalDateTime start, Pageable pageable);
 
     List<Booking> findByItem_IdOrderByStartDesc(int itemId, Pageable pageable);
+
     List<Booking> findByItem_IdOrderByStartDesc(int itemId);
 
     List<Booking> findByItem_IdAndStatusOrderByStartDesc(int itemId, BookingStatus status, Pageable pageable);

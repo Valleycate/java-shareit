@@ -94,10 +94,10 @@ public class BookingServiceImpl implements BookingService {
 
     public List<BookingDtoAnswer> getAllBookingByState(Integer userId, String state, int from, int size) {
         int page;
-        if(from < 0){
+        if (from < 0) {
             page = from;
-        }else{
-            page = from/size;
+        } else {
+            page = from / size;
         }
         userService.findUserById(userId);
         HandlerBookingState handlers = HandlerBookingState.link(
