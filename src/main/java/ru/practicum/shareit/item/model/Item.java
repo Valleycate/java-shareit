@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Getter
 @RequiredArgsConstructor
 @Setter
-@Entity
+@Entity(name = "Item")
 @Table(name = "items")
 public class Item {
     @Id
