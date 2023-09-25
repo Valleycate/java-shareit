@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.practicum.shareit.item.dao.ItemDbRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.request.dao.RequestDbRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoAns;
+import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 

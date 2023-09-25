@@ -3,8 +3,8 @@ package ru.practicum.shareit.itemRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.dao.RequestDbRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dao.UserDbRepository;
 import ru.practicum.shareit.user.model.User;
 
