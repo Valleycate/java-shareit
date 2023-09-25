@@ -44,7 +44,7 @@ public class UserControllerTest {
     private ObjectMapper mapper;
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         userDto = new UserDto();
         userDto.setName("test");
         userDto.setEmail("test@email");

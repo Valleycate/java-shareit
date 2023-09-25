@@ -26,7 +26,7 @@ public class ItemRepositoryTest {
     Item item3;
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         user1 = new User();
         user1.setId(1);
         user1.setName("user1");
