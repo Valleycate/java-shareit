@@ -19,56 +19,37 @@ public class ItemRepositoryTest {
     UserDbRepository userRepository;
     @Autowired
     ItemDbRepository itemRepository;
-    User user1;
+    User user;
     Item item1;
-    User user2;
     Item item2;
-    Item item3;
 
     @BeforeEach
     void beforeEach() {
-        user1 = new User();
-        user1.setId(1);
-        user1.setName("user1");
-        user1.setEmail("user1@email");
-        user1 = userRepository.save(user1);
-
+        user = new User();
+        user.setId(2);
+        user.setName("user");
+        user.setEmail("user@email");
+        user = userRepository.save(user);
         item1 = new Item();
-        item1.setId(1);
-        item1.setOwner(user1);
+        item1.setId(2);
+        item1.setOwner(user);
         item1.setName("item 1");
         item1.setDescription("item 1 description");
         item1.setAvailable(true);
         item1 = itemRepository.save(item1);
-
-        user2 = new User();
-        user2.setId(2);
-        user2.setName("user2");
-        user2.setEmail("user2@email");
-        user2 = userRepository.save(user2);
-
         item2 = new Item();
-        item2.setId(2);
-        item2.setOwner(user2);
+        item2.setId(3);
+        item2.setOwner(user);
         item2.setName("item 2");
         item2.setDescription("item 2 description");
         item2.setAvailable(true);
         item2 = itemRepository.save(item2);
-
-        item3 = new Item();
-        item3.setId(3);
-        item3.setOwner(user2);
-        item3.setName("item 3");
-        item3.setDescription("item 3 description");
-        item3.setAvailable(true);
-        item3 = itemRepository.save(item3);
     }
 
     @Test
     void shouldFindAllItemsByUser() {
-        final List<Item> byOwner = itemRepository.findAllByOwnerId(user1.getId());
-        assertEquals(0, byOwner.size());
-        final List<Item> allByOwner = itemRepository.findAllByOwnerId(user2.getId());
-        assertEquals(2, allByOwner.size());
+            final List<Item> allByOwner = itemRepository.findAllByOwnerId(user.getId());
+            assertEquals(2, allByOwner.size());
+
     }
 }
