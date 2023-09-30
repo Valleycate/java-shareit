@@ -16,12 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 public class ItemRepositoryTest {
     @Autowired
-    UserDbRepository userRepository;
+    private UserDbRepository userRepository;
     @Autowired
-    ItemDbRepository itemRepository;
-    User user;
-    Item item1;
-    Item item2;
+    private ItemDbRepository itemRepository;
+    private User user;
 
     @BeforeEach
     void beforeEach() {
@@ -30,14 +28,14 @@ public class ItemRepositoryTest {
         user.setName("user");
         user.setEmail("user@email");
         user = userRepository.save(user);
-        item1 = new Item();
+        Item item1 = new Item();
         item1.setId(2);
         item1.setOwner(user);
         item1.setName("item 1");
         item1.setDescription("item 1 description");
         item1.setAvailable(true);
         item1 = itemRepository.save(item1);
-        item2 = new Item();
+        Item item2 = new Item();
         item2.setId(3);
         item2.setOwner(user);
         item2.setName("item 2");
@@ -48,8 +46,8 @@ public class ItemRepositoryTest {
 
     @Test
     void shouldFindAllItemsByUser() {
-            final List<Item> allByOwner = itemRepository.findAllByOwnerId(user.getId());
-            assertEquals(2, allByOwner.size());
+        final List<Item> allByOwner = itemRepository.findAllByOwnerId(user.getId());
+        assertEquals(2, allByOwner.size());
 
     }
 }

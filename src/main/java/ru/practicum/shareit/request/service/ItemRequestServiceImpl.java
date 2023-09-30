@@ -29,7 +29,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestMapper mapper = Mappers.getMapper(ItemRequestMapper.class);
 
     public ItemRequestDtoAns addRequest(ItemRequestDto description, int userId) {
-        if (description.getDescription().isEmpty()) {
+        if (description.getDescription() == null || description.getDescription().isBlank()) {
             throw new NullPointerException("описание не может быть пустым");
         }
         ItemRequest request = new ItemRequest();
@@ -58,7 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userService.findUserById(userId);
         List<ItemRequest> requests = repository.findAllByOrderByCreatedDesc(PageRequest.of(page, size));
         return setItemsForRequest(requests.stream()
-                .filter(itemRequest -> itemRequest.getId() != userId)
+                .filter(itemRequest -> itemRequest.getRequester().getId() != userId)
                 .map(mapper::toDto)
                 .collect(Collectors.toList()));
 

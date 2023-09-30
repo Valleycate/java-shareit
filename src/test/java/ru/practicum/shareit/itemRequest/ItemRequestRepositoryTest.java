@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 public class ItemRequestRepositoryTest {
     @Autowired
-    RequestDbRepository requestRepository;
+    private RequestDbRepository requestRepository;
     @Autowired
-    UserDbRepository userRepository;
+    private UserDbRepository userRepository;
 
     @Test
     void shouldFindAllByRequesterId() {

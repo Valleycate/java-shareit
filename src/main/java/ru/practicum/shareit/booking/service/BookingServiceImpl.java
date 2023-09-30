@@ -112,6 +112,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public List<BookingDtoAnswer> getAllBookingByOwnerItemsAndState(Integer userId, String state, int from, int size) {
+        int page;
+        if (from < 0) {
+            page = from;
+        } else {
+            page = from / size;
+        }
         userService.findUserById(userId);
         if (itemService.findAllItemsByUser(userId).isEmpty()) {
             throw new NonexistentException("У этого пользователя нет вещей");
@@ -124,7 +130,6 @@ public class BookingServiceImpl implements BookingService {
                 new HandleBookingStateRejectedWithItems(repository, mapper, itemService),
                 new HandleBookingStateCurrentWithItems(repository, mapper, itemService),
                 new HandleBookingStateUnknown(repository, mapper));
-
-        return handlers.handle(userId, state, from, size);
+        return handlers.handle(userId, state, page, size);
     }
 }

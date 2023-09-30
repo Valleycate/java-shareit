@@ -1,12 +1,14 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.exceptions.NonexistentException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
@@ -26,14 +28,19 @@ import static org.hamcrest.Matchers.equalTo;
 public class UserServiceImplTest {
     private final EntityManager em;
     private final UserServiceImpl service;
+    private UserDto userDto;
+
+    @BeforeEach()
+    void beforeEach() {
+        userDto = new UserDto();
+        userDto.setName("test");
+        userDto.setEmail("test@email");
+        userDto = service.addUser(userDto);
+    }
 
     @Test
     @Order(value = 1)
     void shouldCreateUser() {
-        UserDto userDto = new UserDto();
-        userDto.setName("test");
-        userDto.setEmail("test@email");
-        userDto = service.addUser(userDto);
         TypedQuery<User> query = em.createQuery("Select i from User i where i.id = :id", User.class);
         User user = query.setParameter("id", userDto.getId()).getSingleResult();
         assertThat(user.getId(), equalTo(userDto.getId()));
@@ -53,11 +60,12 @@ public class UserServiceImplTest {
     @Test
     @Order(value = 3)
     void shouldFindUserById() {
-        UserDto userDto = new UserDto();
-        userDto.setName("test");
-        userDto.setEmail("test@email");
-        userDto = service.addUser(userDto);
         User findUserDto = service.findUserById(userDto.getId());
+        try {
+            service.findUserById(23323);
+        } catch (NonexistentException e) {
+            assertThat(e.getMessage(), equalTo("такого пользователя нет!"));
+        }
         TypedQuery<User> query = em.createQuery("Select i from User i where i.id = :id", User.class);
         User user = query.setParameter("id", userDto.getId()).getSingleResult();
         assertThat(user.getId(), equalTo(findUserDto.getId()));

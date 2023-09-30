@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 public class BookingRepositoryTest {
     @Autowired
-    BookingDbRepository repository;
+    private BookingDbRepository repository;
     @Autowired
-    UserDbRepository userRepository;
+    private UserDbRepository userRepository;
     @Autowired
-    ItemDbRepository itemRepository;
+    private ItemDbRepository itemRepository;
 
     @Test
     void shouldReturnAllBookingsByItem() {

@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.controller.ItemController;
+import ru.practicum.shareit.item.controller.XHeaderUserId;
 import ru.practicum.shareit.item.dto.AnsItemsDto;
 import ru.practicum.shareit.item.dto.AnswerCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -30,16 +32,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.item.controller.XHeaderUserId.X_SHARER_USER_ID;
 
 @WebMvcTest(ItemController.class)
 @AutoConfigureMockMvc
 public class ItemControllerTest {
     @MockBean
-    ItemService itemService;
+    private ItemService itemService;
     @Autowired
-    MockMvc mvc;
-    ItemDto itemDto;
-    AnsItemsDto ansItemsDto;
+    private MockMvc mvc;
+    private ItemDto itemDto;
+    private AnsItemsDto ansItemsDto;
     @Autowired
     private ObjectMapper mapper;
 
@@ -58,11 +61,16 @@ public class ItemControllerTest {
     }
 
     @Test
+    void testX_SHARER_USER_ID() {
+        assertEquals("X-Sharer-User-Id", XHeaderUserId.X_SHARER_USER_ID);
+    }
+
+    @Test
     void shouldAddItem() throws Exception {
         when(itemService.addItem(any(), anyInt()))
                 .thenReturn(itemDto);
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,7 +87,7 @@ public class ItemControllerTest {
         when(itemService.updateItem(any(), anyInt(), anyInt()))
                 .thenReturn(itemDto);
         mvc.perform(patch("/items/{itemId}", 1)
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .content(mapper.writeValueAsString(itemDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +105,7 @@ public class ItemControllerTest {
                 .thenReturn(ansItemsDto);
 
         mvc.perform(get("/items/{itemId}", 1)
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -114,7 +122,7 @@ public class ItemControllerTest {
                 .thenReturn(List.of(ansItemsDto));
 
         mvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

@@ -19,13 +19,18 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 public class ItemRequestServiceTest {
-    RequestDbRepository repository = Mockito.mock(RequestDbRepository.class);
-    UserService userService = Mockito.mock(UserService.class);
-    ItemDbRepository itemRepository = Mockito.mock(ItemDbRepository.class);
-    ItemRequestServiceImpl service = new ItemRequestServiceImpl(repository, userService, itemRepository);
+    private final RequestDbRepository repository = Mockito.mock(RequestDbRepository.class);
+    private final UserService userService = Mockito.mock(UserService.class);
+    private final ItemDbRepository itemRepository = Mockito.mock(ItemDbRepository.class);
+    private final ItemRequestServiceImpl service = new ItemRequestServiceImpl(repository, userService, itemRepository);
 
     @Test
     void shouldAddRequest() {
+        try {
+            service.addRequest(new ItemRequestDto(), 1);
+        } catch (NullPointerException e) {
+            assertThat(e.getMessage(), equalTo("описание не может быть пустым"));
+        }
         User user = new User();
         user.setId(2);
         user.setName("user");
@@ -37,6 +42,12 @@ public class ItemRequestServiceTest {
         item.setOwner(user);
         item.setAvailable(true);
         ItemRequestDto description = new ItemRequestDto();
+        description.setDescription("  ");
+        try {
+            service.addRequest(description, 1);
+        } catch (NullPointerException e) {
+            assertThat(e.getMessage(), equalTo("описание не может быть пустым"));
+        }
         description.setDescription("item request");
         when(userService.findUserById(anyInt()))
                 .thenReturn(user);

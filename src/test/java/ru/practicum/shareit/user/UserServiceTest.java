@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.practicum.shareit.user.dao.UserDbRepository;
@@ -16,48 +17,42 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
-    UserDbRepository repository = Mockito.mock(UserDbRepository.class);
-    UserService service = new UserServiceImpl(repository);
+    private final UserDbRepository repository = Mockito.mock(UserDbRepository.class);
+    private final UserService service = new UserServiceImpl(repository);
+    private UserDto userDto;
+    private User user1;
+
+    @BeforeEach()
+    void beforeEach() {
+        userDto = new UserDto();
+        userDto.setName("userDto");
+        userDto.setEmail("userDto@email");
+        userDto = service.addUser(userDto);
+        user1 = new User();
+        user1.setId(0);
+        user1.setName("user1");
+        user1.setEmail("user1@email");
+    }
 
     @Test
     void shouldAddUser() {
-        UserDto userDto = new UserDto();
-        userDto.setId(1);
-        userDto.setName("user1");
-        userDto.setEmail("user1@email");
         assertThat(userDto, equalTo(service.addUser(userDto)));
     }
 
     @Test
     void shouldUpdateUser() {
-        User user1 = new User();
-        user1.setId(1);
-        user1.setName("user1");
-        user1.setEmail("user1@email");
         when(repository.findById(any()))
                 .thenReturn(Optional.of(user1));
-        UserDto userDto = new UserDto();
-        userDto.setId(1);
-        userDto.setName("userDto");
-        userDto.setEmail("userDto@email");
-        service.addUser(userDto);
         assertThat(userDto, equalTo(service.updateUser(userDto, 1)));
         userDto.setEmail("user1@email");
         assertThat("user1@email", equalTo(service.updateUser(userDto, 1).getEmail()));
+        assertThat(userDto, equalTo(service.updateUser(new UserDto(), 1)));
     }
 
     @Test
     void shouldDeleteUser() {
-        User user1 = new User();
-        user1.setId(1);
-        user1.setName("user1");
-        user1.setEmail("user1@email");
         when(repository.findById(any()))
                 .thenReturn(Optional.of(user1));
-        UserDto userDto = new UserDto();
-        userDto.setId(1);
-        userDto.setName("userDto");
-        userDto.setEmail("userDto@email");
         service.deleteUser(userDto.getId());
     }
 
