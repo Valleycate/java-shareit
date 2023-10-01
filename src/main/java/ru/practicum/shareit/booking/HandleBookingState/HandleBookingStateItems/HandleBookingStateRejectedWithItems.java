@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.HandleBookingState.HandleBookingStateItems;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.HandleBookingState.HandlerBookingState;
 import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
@@ -27,11 +28,11 @@ public class HandleBookingStateRejectedWithItems extends HandlerBookingState {
     }
 
     @Override
-    public List<BookingDtoAnswer> findBookings(int userId) {
+    public List<BookingDtoAnswer> findBookings(int userId, int page, int size) {
         List<BookingDtoAnswer> ans = new ArrayList<>();
         itemService.findAllItemsByUserForBooking(userId)
                 .forEach(itemDto -> ans.addAll(repository.findByItem_IdAndStatusOrderByStartDesc(itemDto.getId(),
-                                BookingStatus.REJECTED).stream()
+                                BookingStatus.REJECTED, PageRequest.of(page, size)).stream()
                         .map(mapper::toBookingDto)
                         .collect(Collectors.toList())));
         return ans;

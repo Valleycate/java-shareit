@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @RequiredArgsConstructor
 @Setter
-@Entity
+@Entity(name = "booking")
 @Table(name = "booking")
 public class Booking {
     @Id

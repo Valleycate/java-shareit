@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -13,12 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Getter
 @RequiredArgsConstructor
 @Setter
-@Entity
+@Entity(name = "Item")
 @Table(name = "items")
 public class Item {
     @Id
@@ -32,6 +31,6 @@ public class Item {
     private Boolean available;
     @ManyToOne()
     private User owner;
-    @Transient
+    @ManyToOne()
     private ItemRequest request;
 }

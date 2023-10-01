@@ -11,5 +11,5 @@ public interface UserMapper {
 
     User toUserWithoutCheck(UserDto userDto);
 
-    UserDto toUserDto(@Valid User userDto);
+    UserDto toUserDto(@Valid User user);
 }
