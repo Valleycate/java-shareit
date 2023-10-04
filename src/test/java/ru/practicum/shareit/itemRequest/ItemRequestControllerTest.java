@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.item.controller.XHeaderUserId.X_SHARER_USER_ID;
 
 @WebMvcTest(ItemRequestController.class)
 @AutoConfigureMockMvc
@@ -55,7 +56,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.addRequest(any(), anyInt()))
                 .thenReturn(itemRequestDtoAns);
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .content(mapper.writeValueAsString(requestDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +73,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.findRequestById(anyInt(), anyInt()))
                 .thenReturn(itemRequestDtoAns);
         mvc.perform(get("/requests/{requestId}", 1)
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -88,7 +89,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.findRequestsByUserId(anyInt()))
                 .thenReturn(List.of(itemRequestDtoAns));
         mvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -101,7 +102,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.findAllRequests(anyInt(), anyInt(), anyInt()))
                 .thenReturn(List.of(itemRequestDtoAns));
         mvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

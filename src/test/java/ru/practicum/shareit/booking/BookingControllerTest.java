@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.item.controller.XHeaderUserId.X_SHARER_USER_ID;
 
 @WebMvcTest(BookingController.class)
 @AutoConfigureMockMvc
@@ -61,7 +62,7 @@ public class BookingControllerTest {
         when(bookingService.addBooking(any(), anyInt()))
                 .thenReturn(bookingDtoAnswer);
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .content(mapper.writeValueAsString(bookingDtoRequest))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +79,7 @@ public class BookingControllerTest {
         when(bookingService.getBookingById(anyInt(), anyInt()))
                 .thenReturn(bookingDtoAnswer);
         mvc.perform(get("/bookings/{bookingId}", 1)
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -95,7 +96,7 @@ public class BookingControllerTest {
                 .thenReturn(bookingDtoAnswer);
         mvc.perform(patch("/bookings/{bookingId}", 1)
                         .param("approved", "true")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -111,7 +112,7 @@ public class BookingControllerTest {
         when(bookingService.getAllBookingByState(anyInt(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDtoAnswer));
         mvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -124,7 +125,7 @@ public class BookingControllerTest {
         when(bookingService.getAllBookingByOwnerItemsAndState(anyInt(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDtoAnswer));
         mvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1)
+                        .header(X_SHARER_USER_ID, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

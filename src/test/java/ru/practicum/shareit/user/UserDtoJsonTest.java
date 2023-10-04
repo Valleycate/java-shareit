@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,26 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @JsonTest
 public class UserDtoJsonTest {
+    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
     @Autowired
     private JacksonTester<UserDto> json;
+    private UserDto userDto;
+    private User user;
 
-    @Test
-    void testUserDto() throws Exception {
-        UserDto userDto = new UserDto();
+    @BeforeEach
+    void beforeEach() {
+        userDto = new UserDto();
         userDto.setId(1);
         userDto.setName("test");
         userDto.setEmail("test@email");
+        user = new User();
+        user.setId(1);
+        user.setName("test");
+        user.setEmail("test@email");
+    }
+
+    @Test
+    void testUserDto() throws Exception {
         JsonContent<UserDto> result = json.write(userDto);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("test");
@@ -32,20 +44,25 @@ public class UserDtoJsonTest {
     }
 
     @Test
-    void mapperUserDto() {
-        UserDto originalUserDto = new UserDto();
-        originalUserDto.setId(1);
-        originalUserDto.setName("test");
-        originalUserDto.setEmail("test@email");
-        UserMapper mapper = Mappers.getMapper(UserMapper.class);
+    void shouldReturnNull() {
+        assertNull(mapper.toUserDto(null));
         assertNull(mapper.toUserWithCheck(null));
         assertNull(mapper.toUserWithoutCheck(null));
-        User user = mapper.toUserWithoutCheck(originalUserDto);
-        assertEquals(originalUserDto.getId(), user.getId());
-        assertEquals(originalUserDto.getName(), user.getName());
-        assertEquals(originalUserDto.getEmail(), user.getEmail());
-        assertNull(mapper.toUserDto(null));
+    }
+
+    @Test
+    void mapperUserDto() {
         UserDto userDto = mapper.toUserDto(user);
+        assertUserDtoEqualsUser(userDto, user);
+    }
+
+    @Test
+    void shouldReturnUser() {
+        User user = mapper.toUserWithoutCheck(userDto);
+        assertUserDtoEqualsUser(userDto, user);
+    }
+
+    private void assertUserDtoEqualsUser(UserDto userDto, User user) {
         assertEquals(userDto.getId(), user.getId());
         assertEquals(userDto.getName(), user.getName());
         assertEquals(userDto.getEmail(), user.getEmail());

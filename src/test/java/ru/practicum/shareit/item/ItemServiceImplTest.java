@@ -79,15 +79,9 @@ public class ItemServiceImplTest {
         AnsItemsDto ansItemsDto = itemService.findItem(itemDto.getId(), userDto.getId());
         TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
         Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
-        assertThat(ansItemsDto.getId(), equalTo(item.getId()));
-        assertThat(ansItemsDto.getAvailable(), equalTo(item.getAvailable()));
-        assertThat(ansItemsDto.getDescription(), equalTo(item.getDescription()));
-        assertThat(ansItemsDto.getName(), equalTo(item.getName()));
+        assertThatItemDtoEqualToItem(ansItemsDto, item);
         ansItemsDto = itemService.findItem(itemDto.getId(), userDto2.getId());
-        assertThat(ansItemsDto.getId(), equalTo(item.getId()));
-        assertThat(ansItemsDto.getAvailable(), equalTo(item.getAvailable()));
-        assertThat(ansItemsDto.getDescription(), equalTo(item.getDescription()));
-        assertThat(ansItemsDto.getName(), equalTo(item.getName()));
+        assertThatItemDtoEqualToItem(ansItemsDto, item);
     }
 
     @Test
@@ -95,10 +89,7 @@ public class ItemServiceImplTest {
         AnsItemsDto ansItemsDto = itemService.findItem(itemDto.getId(), userDto.getId());
         TypedQuery<Item> query = em.createQuery("Select i from Item i where i.id = :id", Item.class);
         Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
-        assertThat(ansItemsDto.getId(), equalTo(item.getId()));
-        assertThat(ansItemsDto.getAvailable(), equalTo(item.getAvailable()));
-        assertThat(ansItemsDto.getDescription(), equalTo(item.getDescription()));
-        assertThat(ansItemsDto.getName(), equalTo(item.getName()));
+        assertThatItemDtoEqualToItem(ansItemsDto, item);
         try {
             itemService.findItem(-101, userDto.getId());
         } catch (NonexistentException e) {
@@ -113,5 +104,12 @@ public class ItemServiceImplTest {
         TypedQuery<Item> query = em.createQuery("Select i from Item i", Item.class);
         List<Item> items = query.getResultList();
         assertThat(itemDtos.size(), equalTo(items.size()));
+    }
+
+    private void assertThatItemDtoEqualToItem(AnsItemsDto ansItemsDto, Item item) {
+        assertThat(ansItemsDto.getId(), equalTo(item.getId()));
+        assertThat(ansItemsDto.getAvailable(), equalTo(item.getAvailable()));
+        assertThat(ansItemsDto.getDescription(), equalTo(item.getDescription()));
+        assertThat(ansItemsDto.getName(), equalTo(item.getName()));
     }
 }

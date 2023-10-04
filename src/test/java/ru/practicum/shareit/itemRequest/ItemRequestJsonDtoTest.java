@@ -1,5 +1,6 @@
 package ru.practicum.shareit.itemRequest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,29 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @JsonTest
 public class ItemRequestJsonDtoTest {
+    private final ItemRequestMapper mapper = Mappers.getMapper(ItemRequestMapper.class);
     @Autowired
     private JacksonTester<ItemRequestDto> json;
+    private ItemRequest itemRequest;
+    private ItemRequestDtoAns itemRequestDtoAns;
+
+    @BeforeEach
+    void beforeEach() {
+        User user = new User();
+        user.setId(1);
+        user.setName("user");
+        user.setEmail("user@email");
+        itemRequest = new ItemRequest();
+        itemRequest.setRequester(user);
+        itemRequest.setCreated(LocalDateTime.now());
+        itemRequest.setDescription("item request");
+        itemRequest.setId(1);
+        itemRequestDtoAns = new ItemRequestDtoAns();
+        itemRequestDtoAns.setRequester(user);
+        itemRequestDtoAns.setCreated(LocalDateTime.now());
+        itemRequestDtoAns.setDescription("item request");
+        itemRequestDtoAns.setId(1);
+    }
 
     @Test
     void testItemRequestDto() throws Exception {
@@ -32,29 +54,27 @@ public class ItemRequestJsonDtoTest {
     }
 
     @Test
-    void mapperItemRequestDto() {
-        ItemRequestMapper mapper = Mappers.getMapper(ItemRequestMapper.class);
+    void shouldReturnNull() {
         assertNull(mapper.toDto(null));
         assertNull(mapper.fromDto(null));
-        User user = new User();
-        user.setId(1);
-        user.setName("user");
-        user.setEmail("user@email");
-        ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setRequester(user);
-        itemRequest.setCreated(LocalDateTime.now());
-        itemRequest.setDescription("item request");
-        itemRequest.setId(1);
-        ItemRequestDtoAns itemRequestDtoAns = mapper.toDto(itemRequest);
-        assertEquals(itemRequest.getId(), itemRequestDtoAns.getId());
-        assertEquals(itemRequest.getRequester(), itemRequestDtoAns.getRequester());
-        assertEquals(itemRequest.getCreated(), itemRequestDtoAns.getCreated());
-        assertEquals(itemRequest.getDescription(), itemRequestDtoAns.getDescription());
+    }
+
+    @Test
+    void shouldReturnItemRequest() {
         ItemRequest request = mapper.fromDto(itemRequestDtoAns);
         assertEquals(request.getId(), itemRequestDtoAns.getId());
         assertEquals(request.getRequester(), itemRequestDtoAns.getRequester());
         assertEquals(request.getCreated(), itemRequestDtoAns.getCreated());
         assertEquals(request.getDescription(), itemRequestDtoAns.getDescription());
+    }
+
+    @Test
+    void shouldReturnItemRequestDto() {
+        ItemRequestDtoAns itemRequestDtoAns = mapper.toDto(itemRequest);
+        assertEquals(itemRequest.getId(), itemRequestDtoAns.getId());
+        assertEquals(itemRequest.getRequester(), itemRequestDtoAns.getRequester());
+        assertEquals(itemRequest.getCreated(), itemRequestDtoAns.getCreated());
+        assertEquals(itemRequest.getDescription(), itemRequestDtoAns.getDescription());
     }
 
 }

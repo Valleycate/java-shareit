@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @JsonTest
 public class BookingDtoJsonTest {
+    private final BookingMapper mapper = Mappers.getMapper(BookingMapper.class);
     @Autowired
     private JacksonTester<BookingDtoRequest> json;
+    private User user;
+    private Item item;
+    private BookingDtoRequest bookingRequest;
+    private Booking booking;
 
-    @Test
-    void testBookingDto() throws Exception {
+    @BeforeEach()
+    void beforeEach() {
         ItemDto itemDto = new ItemDto();
         itemDto.setName("test");
         itemDto.setDescription("test description");
@@ -39,11 +45,31 @@ public class BookingDtoJsonTest {
         booker.setName("test");
         booker.setEmail("test@email");
         booker.setId(2);
-        BookingDtoRequest bookingRequest = new BookingDtoRequest();
+        user = new User();
+        user.setName("test");
+        user.setEmail("test@email");
+        user.setId(2);
+        item = new Item();
+        item.setName("test");
+        item.setDescription("test description");
+        item.setAvailable(true);
+        item.setId(1);
+        bookingRequest = new BookingDtoRequest();
         bookingRequest.setId(1);
         bookingRequest.setEnd(LocalDateTime.MAX);
         bookingRequest.setStart(LocalDateTime.of(2024, 12, 13, 3, 42, 05));
-        bookingRequest.setItemId(itemDto.getId());
+        bookingRequest.setItemId(item.getId());
+        booking = new Booking();
+        booking.setId(1);
+        booking.setEnd(LocalDateTime.MAX);
+        booking.setStart(LocalDateTime.of(2024, 12, 13, 3, 42, 05));
+        booking.setItem(item);
+        booking.setBooker(user);
+        booking.setStatus(BookingStatus.WAITING);
+    }
+
+    @Test
+    void testBookingDto() throws Exception {
         JsonContent<BookingDtoRequest> result = json.write(bookingRequest);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.end").isEqualTo(bookingRequest.getEnd().toString());
@@ -51,27 +77,20 @@ public class BookingDtoJsonTest {
     }
 
     @Test
-    void mapperBookingDto() {
-        User user = new User();
-        user.setName("test");
-        user.setEmail("test@email");
-        user.setId(2);
-        Item item = new Item();
-        item.setName("test");
-        item.setDescription("test description");
-        item.setAvailable(true);
-        item.setId(1);
-        BookingDtoRequest bookingRequest = new BookingDtoRequest();
-        bookingRequest.setItemId(item.getId());
-        bookingRequest.setId(1);
-        bookingRequest.setEnd(LocalDateTime.MAX);
-        bookingRequest.setStart(LocalDateTime.of(2024, 12, 13, 3, 42, 05));
-        BookingMapper mapper = Mappers.getMapper(BookingMapper.class);
-        assertNull(mapper.toBookingDto(null));
-        assertNull(mapper.toBookingWithCheck(null, null, null, null));
+    void shouldReturnNotNull() {
         assertNotNull(mapper.toBookingWithCheck(null, user, null, null));
         assertNotNull(mapper.toBookingWithCheck(null, user, item, null));
         assertNotNull(mapper.toBookingWithCheck(null, user, item, BookingStatus.WAITING));
+    }
+
+    @Test
+    void shouldReturnNull() {
+        assertNull(mapper.toBookingDto(null));
+        assertNull(mapper.toBookingWithCheck(null, null, null, null));
+    }
+
+    @Test
+    void shouldReturnBooking() {
         Booking booking = mapper.toBookingWithCheck(bookingRequest, user, item, BookingStatus.WAITING);
         assertEquals(user, booking.getBooker());
         assertEquals(item, booking.getItem());
@@ -80,12 +99,16 @@ public class BookingDtoJsonTest {
         assertEquals(bookingRequest.getEnd(), booking.getEnd());
         assertEquals(bookingRequest.getId(), booking.getId());
         assertEquals(bookingRequest.getItemId(), booking.getItem().getId());
+    }
+
+    @Test
+    void shouldReturnBookingDto() {
         BookingDtoAnswer bookingDtoAnswer = mapper.toBookingDto(booking);
         assertEquals(BookingStatus.WAITING, bookingDtoAnswer.getStatus());
-        assertEquals(bookingRequest.getStart(), bookingDtoAnswer.getStart());
-        assertEquals(bookingRequest.getEnd(), bookingDtoAnswer.getEnd());
-        assertEquals(bookingRequest.getId(), bookingDtoAnswer.getId());
-        assertEquals(bookingRequest.getItemId(), bookingDtoAnswer.getItem().getId());
+        assertEquals(booking.getStart(), bookingDtoAnswer.getStart());
+        assertEquals(booking.getEnd(), bookingDtoAnswer.getEnd());
+        assertEquals(booking.getId(), bookingDtoAnswer.getId());
+        assertEquals(booking.getItem().getId(), bookingDtoAnswer.getItem().getId());
     }
 }
 

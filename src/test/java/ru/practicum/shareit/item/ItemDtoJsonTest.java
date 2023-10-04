@@ -23,9 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @JsonTest
 public class ItemDtoJsonTest {
+    private final ItemMapper mapper = Mappers.getMapper(ItemMapper.class);
     @Autowired
     private JacksonTester<ItemDto> json;
     private ItemDto itemDto;
+    private User user;
+    private Item item;
 
     @BeforeEach()
     void beforeEach() {
@@ -34,6 +37,16 @@ public class ItemDtoJsonTest {
         itemDto.setName("name");
         itemDto.setId(1);
         itemDto.setAvailable(true);
+        user = new User();
+        user.setId(1);
+        user.setName("user");
+        user.setEmail("user@email");
+        item = new Item();
+        item.setOwner(user);
+        item.setId(1);
+        item.setAvailable(true);
+        item.setDescription("description");
+        item.setName("name");
     }
 
     @Test
@@ -46,42 +59,60 @@ public class ItemDtoJsonTest {
     }
 
     @Test
-    void mapperItemDtoTest() {
-        User user = new User();
-        user.setId(1);
-        user.setName("user");
-        user.setEmail("user@email");
-        ItemMapper mapper = Mappers.getMapper(ItemMapper.class);
-        assertNull(mapper.toItemDto(null));
-        assertNull(mapper.toItemWithCheck(null, null, null));
+    void shouldReturnNotNull() {
         assertNotNull(mapper.toItemWithCheck(itemDto, null, null));
         assertNotNull(mapper.toItemWithCheck(null, new User(), null));
         assertNotNull(mapper.toItemWithCheck(null, null, new ItemRequest()));
-        assertNull(mapper.toItemWithoutCheck(null, null, null));
         assertNotNull(mapper.toItemWithoutCheck(itemDto, null, null));
         assertNotNull(mapper.toItemWithoutCheck(null, null, new ItemRequest()));
         assertNotNull(mapper.toItemWithoutCheck(null, new User(), null));
-        assertNull(mapper.toAnsItemsDto(null, null));
         assertNotNull(mapper.toAnsItemsDto(null, new ArrayList<>()));
+    }
+
+    @Test
+    void shouldReturnNull() {
+        assertNull(mapper.toItemDto(null));
+        assertNull(mapper.toItemWithCheck(null, null, null));
+        assertNull(mapper.toItemWithoutCheck(null, null, null));
+        assertNull(mapper.toAnsItemsDto(null, null));
+    }
+
+    @Test
+    void shouldReturnItemWithoutCheck() {
         Item item = mapper.toItemWithoutCheck(itemDto, user, null);
-        assertEquals(itemDto.getDescription(), item.getDescription());
-        assertEquals(itemDto.getName(), item.getName());
-        assertEquals(itemDto.getId(), item.getId());
-        assertEquals(itemDto.getAvailable(), item.getAvailable());
+        assertEqualsItemDtoToItem(itemDto, item);
+    }
+
+    @Test
+    void shouldReturnItemWithCheck() {
+        Item item = mapper.toItemWithCheck(itemDto, user, null);
+        assertEqualsItemDtoToItem(itemDto, item);
+    }
+
+    @Test
+    void shouldReturnAnsItemDto() {
         AnsItemsDto ansItemsDto = mapper.toAnsItemsDto(item, null);
         assertEquals(ansItemsDto.getDescription(), item.getDescription());
         assertEquals(ansItemsDto.getName(), item.getName());
         assertEquals(ansItemsDto.getId(), item.getId());
         assertEquals(ansItemsDto.getAvailable(), item.getAvailable());
+    }
+
+    @Test
+    void shouldReturnItemDto() {
         itemDto = mapper.toItemDto(item);
-        assertEquals(itemDto.getDescription(), item.getDescription());
-        assertEquals(itemDto.getName(), item.getName());
-        assertEquals(itemDto.getId(), item.getId());
-        assertEquals(itemDto.getAvailable(), item.getAvailable());
+        assertEqualsItemDtoToItem(itemDto, item);
         ItemRequest request = new ItemRequest();
         request.setId(1);
         item.setRequest(request);
         itemDto = mapper.toItemDto(item);
         assertEquals(itemDto.getRequestId(), item.getRequest().getId());
+    }
+
+    private void assertEqualsItemDtoToItem(ItemDto itemDto, Item item) {
+        assertEquals(itemDto.getDescription(), item.getDescription());
+        assertEquals(itemDto.getName(), item.getName());
+        assertEquals(itemDto.getId(), item.getId());
+        assertEquals(itemDto.getAvailable(), item.getAvailable());
     }
 }
