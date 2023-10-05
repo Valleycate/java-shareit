@@ -19,6 +19,8 @@ import ru.practicum.shareit.item.dto.NextBooking;
 import ru.practicum.shareit.item.dto.RequestCommentDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
@@ -34,6 +36,8 @@ public class ItemServiceImpl implements ItemService {
     private final UserServiceImpl userService;
     private final ItemDbRepository repository;
     private final BookingDbRepository bookingRepository;
+    private final ItemRequestService requestService;
+    private final ItemRequestMapper requestMapper = Mappers.getMapper(ItemRequestMapper.class);
     private final CommentDbRepository commentRepository;
     private final ItemMapper mapper = Mappers.getMapper(ItemMapper.class);
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
@@ -41,7 +45,8 @@ public class ItemServiceImpl implements ItemService {
     public AnsItemsDto findItem(int itemId, int userId) {
         Item item = findItemById(itemId);
         if (item.getOwner().getId() == userId) {
-            return setLastAndNextBookingForItem(mapper.toAnsItemsDto(findItemById(itemId), findAllCommentsByItemId(itemId)));
+            return setLastAndNextBookingForItem(mapper.toAnsItemsDto(findItemById(itemId),
+                    findAllCommentsByItemId(itemId)));
         }
         return mapper.toAnsItemsDto(findItemById(itemId), findAllCommentsByItemId(itemId));
     }
@@ -77,7 +82,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public ItemDto addItem(ItemDto itemDto, int userId) {
-        Item item = mapper.toItemWithCheck(itemDto, userService.findUserById(userId));
+        Item item;
+        if (itemDto.getRequestId() == null) {
+            item = mapper.toItemWithCheck(itemDto, userService.findUserById(userId), null);
+        } else {
+            item = mapper.toItemWithCheck(itemDto, userService.findUserById(userId),
+                    requestMapper.fromDto(requestService.findRequestById(itemDto.getRequestId(), userId)));
+        }
         repository.save(item);
         return mapper.toItemDto(item);
     }
@@ -87,7 +98,14 @@ public class ItemServiceImpl implements ItemService {
         if (item.getOwner().getId() != userId) {
             throw new NonexistentException("Обновлять информацию о вещи может только её владелец");
         }
-        Item itemUpdate = mapper.toItemWithoutCheck(itemDto, userService.findUserById(userId));
+        Item itemUpdate;
+        if (itemDto.getRequestId() == null) {
+            itemUpdate = mapper.toItemWithoutCheck(itemDto, userService.findUserById(userId), null);
+        } else {
+            itemUpdate = mapper.toItemWithoutCheck(itemDto, userService.findUserById(userId),
+                    requestMapper.fromDto(requestService.findRequestById(itemDto.getRequestId(), userId)));
+            item.setRequest(itemUpdate.getRequest());
+        }
         if (itemUpdate.getAvailable() != null) {
             item.setAvailable(itemUpdate.getAvailable());
         }

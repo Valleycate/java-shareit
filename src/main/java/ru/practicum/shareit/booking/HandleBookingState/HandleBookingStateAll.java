@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.HandleBookingState;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dao.BookingDbRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoAnswer;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -19,8 +20,8 @@ public class HandleBookingStateAll extends HandlerBookingState {
     }
 
     @Override
-    public List<BookingDtoAnswer> findBookings(int userId) {
-        return repository.findByBooker_IdOrderByStartDesc(userId).stream()
+    public List<BookingDtoAnswer> findBookings(int userId, int page, int size) {
+        return repository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(page, size)).stream()
                 .map(mapper::toBookingDto)
                 .collect(Collectors.toList());
     }

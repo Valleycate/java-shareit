@@ -11,7 +11,7 @@ import java.util.Map;
 @ControllerAdvice
 @RestController
 public class ErrorHandler {
-    @ExceptionHandler(ru.practicum.shareit.exceptions.NonexistentException.class)
+    @ExceptionHandler(NonexistentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNonexistentException(final NonexistentException e) {
         return Map.of("Non-existent object", e.getMessage());
